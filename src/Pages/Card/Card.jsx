@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import Layout from '../../components/layout/Layout';
 import myContext from '../../Context/data/myContext';
+import Modal from '../../Components/Modal/Modal';
 
 function Cart() {
 
@@ -10,7 +11,7 @@ function Cart() {
   return (
     <Layout >
       <div className="h-screen bg-gray-100 pt-5 " style={{ backgroundColor: mode === 'dark' ? '#282c34' : '', color: mode === 'dark' ? 'white' : '', }}>
-        <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
+        <h1 className="mb-10 text-center text-3xl font-bold">Cart Items</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 ">
           <div className="rounded-lg md:w-2/3 ">
             <div className="justify-between mb-6 rounded-lg border  drop-shadow-xl bg-white p-6  sm:flex  sm:justify-start" style={{ backgroundColor: mode === 'dark' ? 'rgb(32 33 34)' : '', color: mode === 'dark' ? 'white' : '', }}>
@@ -49,12 +50,7 @@ function Cart() {
               </div>
             </div>
             {/* <Modal  /> */}
-            <button
-              type="button"
-              className="w-full  bg-yellow-400 py-2 text-center rounded-lg text-black font-bold "
-            >
-              Buy Now
-            </button>
+            <Modal />
           </div>
         </div>
       </div>
