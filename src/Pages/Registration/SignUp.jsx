@@ -35,7 +35,16 @@ const Signup = () => {
     }
     const userRef = collection(fireDB, "users")
     await addDoc(userRef, user);
-    toast.success("Account Has Been Created, You Can Login Now")
+    toast.success("Account Has Been Created, You Can Login Now", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
     setName(" ");
     setEmail(" ");
     setPassword(" ");
@@ -46,7 +55,6 @@ const Signup = () => {
       setLoading(false)
     }
   }
-
   return (
     <div className=" flex bg-gray-200 justify-center items-center h-screen">
       {loading && <Loader/>}

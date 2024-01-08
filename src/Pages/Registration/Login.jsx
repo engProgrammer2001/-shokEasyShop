@@ -1,8 +1,48 @@
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import myContext from "../../Context/data/myContext";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../Firebase/FirebaseConfig";
+import { toast } from "react-toastify";
+import Loader from "../../Components/Loader/Loader";
 
 const Login = () => {
+  const context = useContext(myContext);
+  const { loading, setLoading } = context;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const login = async () => {
+    setLoading(true);
+
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Logined Sucessfully",{
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      localStorage.setItem("user", JSON.stringify(result));
+      navigate("/");
+      setLoading(false)
+
+    } catch (error) {
+      console.log(error);
+      setLoading(false)
+    }
+  };
+
   return (
     <div className=" flex bg-gray-200 justify-center items-center h-screen">
+      {loading && <Loader/>}
       <div className=" bg-gray-800 px-10 py-10 rounded-xl ">
         <div className="">
           <h1 className="text-center text-white text-xl mb-4 font-bold">
@@ -11,6 +51,8 @@ const Login = () => {
         </div>
         <div>
           <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             name="email"
             className=" bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
@@ -19,13 +61,18 @@ const Login = () => {
         </div>
         <div>
           <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
             className=" bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
             placeholder="Password"
           />
         </div>
         <div className=" flex justify-center mb-3">
-          <button className=" bg-yellow-400 w-full hover:bg-yellow-500 text-black font-bold  px-2 py-2 rounded-lg">
+          <button
+            onClick={login}
+            className=" bg-yellow-400 w-full hover:bg-yellow-500 text-black font-bold  px-2 py-2 rounded-lg"
+          >
             Login
           </button>
         </div>
