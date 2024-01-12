@@ -23,29 +23,29 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/order" element={
-            <ProtectedRoute>
+            <ProtectedRoutes>
               <Order />
-            </ProtectedRoute>
+            </ProtectedRoutes>
           } />
           <Route path="/card" element={<Card />} />
           <Route path="/allproduct" element={<Allproduct />} />
           <Route path="/dashboard" element={
-            <ProtectedRouteForAdmin>
+            <ProtectedRoutesForAdmin>
               <Dashboard />
-            </ProtectedRouteForAdmin>
+            </ProtectedRoutesForAdmin>
           } />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/productinfo/:id" element={<ProductInfo />} />
           <Route path="/addproduct" element={
-            <ProtectedRouteForAdmin>
+            <ProtectedRoutesForAdmin>
               <AddProduct />
-            </ProtectedRouteForAdmin>
+            </ProtectedRoutesForAdmin>
           } />
           <Route path="/updateproduct" element={
-            <ProtectedRouteForAdmin>
+            <ProtectedRoutesForAdmin>
               <UpdateProduct />
-            </ProtectedRouteForAdmin>
+            </ProtectedRoutesForAdmin>
           } />
           <Route path="/*" element={<Nopage />} />
         </Routes>
@@ -59,23 +59,24 @@ export default App;
 
 
 // User 
-export const ProtectedRoute = ({children}) => {
-  const user = localStorage.getItem('user')
-  if(user){
-    return children
+export const ProtectedRoutes = ({ children }) => {
+  if (localStorage.getItem('user')) {
+    return children;
   }
-  else{
-    return <Navigate to={'/login'} />
+  else {
+    return <Navigate to='/login' />
   }
 }
 
+
 // Admin
-const ProtectedRouteForAdmin = (children) => {
+export const ProtectedRoutesForAdmin = ({children}) => {
   const admin = JSON.parse(localStorage.getItem('user'))
-  if(admin.user.email === 'askushwaha613@gmail.com'){
-    return children
+  console.log(admin.user.email)
+  if (admin.user.email === 'askushwaha613@gmail.com') {
+    return children;
   }
-  else{
-    return <Navigate to={'/login'} />
+  else {
+    return <Navigate to='/login' />
   }
 }

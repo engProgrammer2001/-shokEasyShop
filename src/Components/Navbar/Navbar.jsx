@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { BsFillCloudSunFill } from "react-icons/bs";
 import { Dialog, Transition } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const context = useContext(myContext);
@@ -12,13 +13,15 @@ const Navbar = () => {
 
   const [open, setOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem('user'));
   // console.log(user.user.email);
 
-  const logout = () =>{
+  const logout = () => {
     localStorage.clear('user');
     window.location.href = '/login';
   }
+
+  const cartItems = useSelector((state) => state.cart)
 
   return (
     <div className="bg-white sticky top-0 z-50 ">
@@ -72,14 +75,15 @@ const Navbar = () => {
                   >
                     All Products
                   </Link>
-                  <div className="flow-root">
+
+                  {user ? <div className="flow-root">
                     <Link
                       to={"/order"} style={{ color: mode === "dark" ? "white" : "" }}className="-m-2 block p-2 font-medium text-gray-900">
                       Order
                     </Link>
-                  </div>
+                  </div> : ""}
 
-                  {user?.user?.email === 'askushwaha613@gmail.comn' ? 
+                  {user?.user?.email === 'askushwaha613@gmail.com' ? 
                   <div className="flow-root">
                     <Link
                       to={"/dashboard"} className="-m-2 block p-2 font-medium text-gray-900" style={{ color: mode === "dark" ? "white" : "" }}>
@@ -87,11 +91,11 @@ const Navbar = () => {
                     </Link>
                   </div> : ''}
 
-                  <div className="flow-root">
+                 {user ?  <div className="flow-root">
                     <a onClick={logout} className="-m-2 block p-2 font-medium text-gray-900 cursor-pointer" style={{ color: mode === "dark" ? "white" : "" }}>
                       Logout
                     </a>
-                  </div>
+                  </div> :''}
 
                   <div className="flow-root">
                     <Link
@@ -187,25 +191,22 @@ const Navbar = () => {
                       height={80}
                       className="rounded-full"
                     />
-                    {/* <h1 className=' text-2xl font-bold text-black  px-2 py-1 rounded' style={{ color: mode === 'dark' ? 'white' : '', }}>
-                    </h1> */}
+                    
                   </div>
                 </Link>
               </div>
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <Link
-                    to={"/allproducts"}
-                    className="text-sm font-medium text-gray-700 "
-                    style={{ color: mode === "dark" ? "white" : "" }}
-                  >
+                    to={"/allproducts"} className="text-sm font-medium text-gray-700 " style={{ color: mode === "dark" ? "white" : "" }}>
                     All Products
                   </Link>
 
-                  <Link
+                  
+                  {user ? <Link
                     to={"/order"} className="text-sm font-medium text-gray-700 " style={{ color: mode === "dark" ? "white" : "" }}>
                     Order
-                  </Link>
+                  </Link> : ''}
 
                   {user?.user?.email === 'askushwaha613@gmail.com' ?
                   <Link
@@ -215,7 +216,7 @@ const Navbar = () => {
 
                   {user ? <a onClick={logout} className="text-sm font-medium text-gray-700 cursor-pointer  " style={{ color: mode === "dark" ? "white" : "" }}>
                     Logout
-                  </a> : ''}
+                  </a> : ""}
                 </div>
                 <div className="hidden lg:ml-8 lg:flex">
                   <a href="#" className="flex items-center text-gray-700 ">
@@ -282,7 +283,7 @@ const Navbar = () => {
                       className="ml-2 text-lg font-bold text-yellow-500 group-"
                       style={{ color: mode === "dark" ? "white" : "" }}
                     >
-                      0
+                      {cartItems.length}
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </Link>
@@ -295,5 +296,6 @@ const Navbar = () => {
     </div>
   );
 };
+
 
 export default Navbar;
