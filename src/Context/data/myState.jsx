@@ -7,6 +7,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -59,7 +60,7 @@ function myState(props) {
 
     try {
       await addDoc(productRef, products);
-      toast.success("Product Add successfully",{
+      toast.success("Product Add successfully", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true,
@@ -68,7 +69,7 @@ function myState(props) {
         draggable: true,
         progress: undefined,
         theme: "colored",
-    });
+      });
 
       setTimeout(() => {
         window.location.href = "/dashboard";
@@ -117,21 +118,20 @@ function myState(props) {
     setLoading(true);
     try {
       await setDoc(doc(fireDB, "products", products.id), products);
-      toast.success("Product Updated successfully",{
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+      toast.success("Product Updated successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
       });
 
       getProductData();
       window.location.href = "/dashboard";
       setLoading(false);
-
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -143,7 +143,7 @@ function myState(props) {
     try {
       setLoading(true);
       await deleteDoc(doc(fireDB, "products", item.id));
-      toast.success("Product Deleted successfully",{
+      toast.success("Product Deleted successfully", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true,
@@ -156,15 +156,91 @@ function myState(props) {
       getProductData();
       setLoading(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setLoading(false);
     }
   };
 
+  // Get Order Data Function in the Cart
+  const [order, setOrder] = useState([]);
+
+  const getOrderData = async () => {
+    setLoading(true);
+    try {
+      const result = await getDocs(collection(fireDB, 'order'));
+      const ordersArray = [];
+      result.forEach((doc) => {
+        ordersArray.push(doc.data());
+        setLoading(false);
+      });
+      setOrder(ordersArray);
+      console.log(ordersArray);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getProductData();
+    getOrderData();
+  }, []);
+
+  // Get User Data Functin
+  const [user, setUser] = useState([]);
+
+  const getUserData = async () => {
+    setLoading(true)
+    try {
+      const result = await getDocs(collection(fireDB, "users"))
+      const usersArray = [];
+      result.forEach((doc) => {
+        usersArray.push(doc.data());
+        setLoading(false)
+      });
+      setUser(usersArray);
+      console.log(usersArray)
+      setLoading(false);
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+  useEffect(() => {
+    getProductData();
+    getOrderData();
+    getUserData();
+  }, []);
+
+  // This is for the Filter 
+  const [searchkey, setSearchkey] = useState('')
+  const [filterType, setFilterType] = useState('')
+  const [filterPrice, setFilterPrice] = useState('')
+
   return (
     <MyContext.Provider
       value={{
-        mode,toggleMode,loading, setLoading, products, setProducts, addproduct, product, edithandle, updateProduct, deleteProduct}}>
+        mode,
+        toggleMode,
+        loading,
+        setLoading,
+        products,
+        setProducts,
+        addproduct,
+        product,
+        edithandle,
+        updateProduct,
+        deleteProduct,
+        order,
+        user,
+        searchkey,
+        setSearchkey,
+        filterType,
+        setFilterType,
+        filterPrice,
+        setFilterPrice
+      }}
+    >
       {props.children}
     </MyContext.Provider>
   );
