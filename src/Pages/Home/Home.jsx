@@ -6,6 +6,8 @@ import Testimonial from "../../Components/Testimonial/Testimonial";
 import Layout from "../../components/layout/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, deleteFromCart } from "../../Redux/CartSlice";
+import { Link } from "react-router-dom";
+import Track from "../../Components/track/track";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,12 @@ const Home = () => {
       <HeroSection />
       <Filter />
       <ProductCard />
+      <div className="flex justify-center -mt-10 mb-4 pt-5">
+        <Link to={'/allproducts'}>
+          <button className=' bg-gray-300 px-5 py-2 rounded-xl'>See more</button>
+        </Link>
+      </div>
+      <Track />
       <Testimonial />
     </Layout>
   );
