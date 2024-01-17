@@ -1,7 +1,52 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
+import myContext from "../../Context/data/myContext";
+import { useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../Redux/CartSlice";
+import { fireDB } from "../../Firebase/FirebaseConfig";
 
 function ProductInfo() {
+  const context = useContext(myContext);
+  const { loading, setLoading } = context;
+
+  const [products, setProducts] = useState("");
+  const params = useParams();
+  // console.log(products.title)
+
+  const getProductData = async () => {
+    setLoading(true);
+    try {
+      const productTemp = await getDoc(doc(fireDB, "products", params.id));
+      // console.log(productTemp)
+      setProducts(productTemp.data());
+      // console.log(productTemp.data())
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProductData();
+  }, []);
+
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart);
+  // console.log(cartItems)
+
+  // add to cart
+  const addCart = (products) => {
+    dispatch(addToCart(products));
+    toast.success("add to cart");
+  };
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   return (
     <Layout>
       <section className="text-gray-600 body-font overflow-hidden">
@@ -10,14 +55,14 @@ function ProductInfo() {
             <img
               alt="ecommerce"
               className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-              src="https://dummyimage.com/400x400"
+              src={products.imageUrl}
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 className="text-sm title-font text-gray-500 tracking-widest">
                 BRAND NAME
               </h2>
               <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-                The Catcher in the Rye
+                {products.title}
               </h1>
               <div className="flex mb-4">
                 <span className="flex items-center">
@@ -79,7 +124,10 @@ function ProductInfo() {
                   <span className="text-gray-600 ml-3">4 Reviews</span>
                 </span>
                 <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200 space-x-2s">
-                  <a className="text-gray-500" href="https://www.facebook.com/asashok.maurya?mibextid=ZbWKwL">
+                  <a
+                    className="text-gray-500"
+                    href="https://www.facebook.com/asashok.maurya?mibextid=ZbWKwL"
+                  >
                     <svg
                       fill="currentColor"
                       strokeLinecap="round"
@@ -118,19 +166,14 @@ function ProductInfo() {
                 </span>
               </div>
               <p className="leading-relaxed border-b-2 mb-5 pb-5">
-                Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-                sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-                juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-                seitan poutine tumeric. Gastropub blue bottle austin listicle
-                pour-over, neutra jean shorts keytar banjo tattooed umami
-                cardigan.
+                {products.description}
               </p>
 
               <div className="flex">
                 <span className="title-font font-medium text-2xl text-gray-900">
-                  $58.00
+                &#8377;{products.price}
                 </span>
-                <button className="flex ml-auto text-black bg-yellow-400 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-500 rounded">
+                <button onClick={()=> addCart(products)} className="flex ml-auto text-black bg-yellow-400 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-500 rounded">
                   Add To Cart
                 </button>
                 <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
